@@ -10,14 +10,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/  
+*/
 
 using UnityEngine;
 
 namespace Unity.Robotics.UrdfImporter
 {
     public static class UrdfLinkExtensions
-    { 
+    {
         public static GameObject Create(Transform parent, Link link = null, Joint joint = null)
         {
             GameObject linkObject = new GameObject("link");
@@ -61,8 +61,8 @@ namespace Unity.Robotics.UrdfImporter
             else if (joint != null)
                 UrdfJoint.Create(urdfLink.gameObject, UrdfJoint.GetJointType(joint.type), joint);
 
-        } 
-        
+        }
+
         public static Link ExportLinkData(this UrdfLink urdfLink)
         {
             if (urdfLink.transform.localScale != Vector3.one)
@@ -74,7 +74,7 @@ namespace Unity.Robotics.UrdfImporter
                 collisions = urdfLink.GetComponentInChildren<UrdfCollisions>().ExportCollisionsData(),
                 inertial = urdfInertial == null ? null : urdfInertial.ExportInertialData()
             };
-            
+
             return link;
         }
     }

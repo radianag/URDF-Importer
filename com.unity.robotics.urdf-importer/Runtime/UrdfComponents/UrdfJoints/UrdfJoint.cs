@@ -37,7 +37,8 @@ namespace Unity.Robotics.UrdfImporter
         public int xAxis = 0;
 
 #if UNITY_2020_1_OR_NEWER
-        protected ArticulationBody unityJoint;
+        // TODO @radian Hacky change, find better way to do it
+        public ArticulationBody unityJoint;
         protected Vector3 axisofMotion;
 #else
         protected UnityEngine.Joint unityJoint;
@@ -55,6 +56,12 @@ namespace Unity.Robotics.UrdfImporter
         protected int defaultDamping = 0;
         protected int defaultFriction = 0;
 
+        // Why if I use a struct/class UrdfMimic it will be gone during runtime?
+        public bool hasMimic = false;
+        public string mimicedJoint;
+        public double mimicMultiplier;
+        public double mimicOffset;
+
         public static UrdfJoint Create(GameObject linkObject, JointTypes jointType, Joint joint = null)
         {
 #if UNITY_2020_1_OR_NEWER
@@ -68,6 +75,13 @@ namespace Unity.Robotics.UrdfImporter
             {
                 urdfJoint.jointName = joint.name;
                 urdfJoint.ImportJointData(joint);
+                if(joint.mimic != null)
+                {
+                    urdfJoint.hasMimic = true;
+                    urdfJoint.mimicedJoint = joint.mimic.joint;
+                    urdfJoint.mimicMultiplier = joint.mimic.multiplier;
+                    urdfJoint.mimicOffset = joint.mimic.offset;
+                }
             }
             return urdfJoint;
         }
@@ -219,7 +233,7 @@ namespace Unity.Robotics.UrdfImporter
                 unityJoint.jointFriction = defaultFriction;
             }
         }
-
+    
         #endregion
 
         #region Export
@@ -332,6 +346,7 @@ namespace Unity.Robotics.UrdfImporter
         #endregion
 
         #endregion
+
     }
 }
 
