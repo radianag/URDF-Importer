@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.Robotics;
 using UnityEngine;
 
@@ -34,17 +36,50 @@ namespace Unity.Robotics.UrdfImporter.Control
         {
             previousIndex = selectedIndex = 1;
             this.gameObject.AddComponent<FKRobot>();
-            articulationChain = this.GetComponentsInChildren<ArticulationBody>();
-            int defDyanmicVal = 10;
-            foreach (ArticulationBody joint in articulationChain)
+            UrdfJoint[] urdfJoints = this.GetComponentsInChildren<UrdfJoint>();
+
+            float defDyanmicVal = 3f;
+            float defMimicDynamicVal = 0.2f;
+
+            List<ArticulationBody> tempActiveChain = new List<ArticulationBody>();
+            foreach(UrdfJoint urdfJoint in urdfJoints)
             {
-                joint.gameObject.AddComponent<JointControl>();
-                joint.jointFriction = defDyanmicVal;
-                joint.angularDamping = defDyanmicVal;
-                ArticulationDrive currentDrive = joint.xDrive;
-                currentDrive.forceLimit = forceLimit;
-                joint.xDrive = currentDrive;
+                ArticulationBody joint = urdfJoint.unityJoint;
+                if(urdfJoint.hasMimic)
+                {
+                    UrdfJoint mimicedJoint = Array.Find(urdfJoints, u=> u.jointName == urdfJoint.mimicedJoint);
+
+                    if(mimicedJoint == null)
+                    {
+                        // ERROR
+                        Debug.Log("Mimiced joint not found: " + urdfJoint.mimicedJoint.ToString());
+                        return;
+                    }
+
+                    MimicJointControl mimicJointControl = joint.gameObject.AddComponent<MimicJointControl>();
+                    mimicJointControl.set(mimicedJoint, urdfJoint.mimicMultiplier, urdfJoint.mimicOffset);
+                    joint.jointFriction = defMimicDynamicVal;
+                    joint.angularDamping = defMimicDynamicVal;
+                }
+                else
+                {
+                    joint.gameObject.AddComponent<JointControl>();
+                    joint.jointFriction = defDyanmicVal;
+                    joint.angularDamping = defDyanmicVal;
+                    ArticulationDrive currentDrive = joint.xDrive;
+                    currentDrive.forceLimit = forceLimit;
+                    joint.xDrive = currentDrive;
+
+                    tempActiveChain.Add(joint);
+                }
             }
+
+            articulationChain = new ArticulationBody[tempActiveChain.Count];
+            for(int i = 0; i < tempActiveChain.Count; i++)
+            {
+                articulationChain[i] = tempActiveChain[i];
+            }
+
             DisplaySelectedJoint(selectedIndex);
             StoreJointColors(selectedIndex);
         }
