@@ -12,7 +12,8 @@ public class MimicJointControl : MonoBehaviour
     private ArticulationBody joint;
     private UrdfJoint urdfJoint;
 
-    public void set(UrdfJoint mimicedJoint, double multiplier, double offset = 0.0)
+
+    public void SetMimic(UrdfJoint mimicedJoint, double multiplier, double offset = 0.0)
     {
         this.mimicedJoint = mimicedJoint;
         this.multiplier = (float)multiplier;
@@ -23,19 +24,12 @@ public class MimicJointControl : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         joint = this.GetComponent<ArticulationBody>();
         urdfJoint = this.GetComponent<UrdfJoint>();
-        ArticulationDrive currentDrive = joint.xDrive;
-        currentDrive.stiffness = 10000; // P
-        currentDrive.damping = 1000; // D
-        currentDrive.forceLimit = 200;
-        joint.xDrive = currentDrive;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         ArticulationDrive currentDrive = joint.xDrive;
