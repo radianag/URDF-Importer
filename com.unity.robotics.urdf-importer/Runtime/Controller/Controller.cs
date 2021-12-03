@@ -38,8 +38,7 @@ namespace Unity.Robotics.UrdfImporter.Control
             this.gameObject.AddComponent<FKRobot>();
             UrdfJoint[] urdfJoints = this.GetComponentsInChildren<UrdfJoint>();
 
-            float defDyanmicVal = 3f;
-            float defMimicDynamicVal = 0.2f;
+            float defDyanamicVal = 0.05f;
 
             List<ArticulationBody> tempActiveChain = new List<ArticulationBody>();
             foreach(UrdfJoint urdfJoint in urdfJoints)
@@ -57,18 +56,25 @@ namespace Unity.Robotics.UrdfImporter.Control
                     }
 
                     MimicJointControl mimicJointControl = joint.gameObject.AddComponent<MimicJointControl>();
-                    mimicJointControl.set(mimicedJoint, urdfJoint.mimicMultiplier, urdfJoint.mimicOffset);
-                    joint.jointFriction = defMimicDynamicVal;
-                    joint.angularDamping = defMimicDynamicVal;
+                    mimicJointControl.SetMimic(mimicedJoint, urdfJoint.mimicMultiplier, urdfJoint.mimicOffset);
+                    ArticulationDrive currentDrive = joint.xDrive;
+                    currentDrive.stiffness = stiffness;
+                    currentDrive.damping = damping;
+                    currentDrive.forceLimit = forceLimit;
+                    joint.xDrive = currentDrive;
+                    joint.jointFriction = defDyanamicVal;
+                    joint.angularDamping = defDyanamicVal;
                 }
                 else
                 {
                     joint.gameObject.AddComponent<JointControl>();
-                    joint.jointFriction = defDyanmicVal;
-                    joint.angularDamping = defDyanmicVal;
                     ArticulationDrive currentDrive = joint.xDrive;
+                    currentDrive.stiffness = stiffness;
+                    currentDrive.damping = damping;
                     currentDrive.forceLimit = forceLimit;
                     joint.xDrive = currentDrive;
+                    joint.jointFriction = defDyanamicVal;
+                    joint.angularDamping = defDyanamicVal;
 
                     tempActiveChain.Add(joint);
                 }
