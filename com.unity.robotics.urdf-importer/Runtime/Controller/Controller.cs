@@ -56,7 +56,7 @@ namespace Unity.Robotics.UrdfImporter.Control
                     }
 
                     MimicJointControl mimicJointControl = joint.gameObject.AddComponent<MimicJointControl>();
-                    mimicJointControl.SetMimic(mimicedJoint, urdfJoint.mimicMultiplier, urdfJoint.mimicOffset);
+                    mimicJointControl.SetMimic(mimicedJoint, (float)urdfJoint.mimicMultiplier, (float)urdfJoint.mimicOffset);
                     ArticulationDrive currentDrive = joint.xDrive;
                     currentDrive.stiffness = stiffness;
                     currentDrive.damping = damping;
