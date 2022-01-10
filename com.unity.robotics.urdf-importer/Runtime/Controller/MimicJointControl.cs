@@ -52,11 +52,18 @@ public class MimicJointControl : MonoBehaviour
         }
         updateJointDriveTarget(localTarget);
     }
+
     public void TeleportSetToStartJointPosition()
     {
         var startTarget = multiplier * mimicedJointStartJointPosition + offset; // Rad or m
-
         TeleportToJointPosition(startTarget);
+    }
+
+    public void TeleportSetToMatchJointPosition()
+    {
+        float localTarget = mimicedJoint.unityJoint.jointPosition;
+        localTarget = multiplier * localTarget + offset; // Rad or m
+        TeleportToJointPosition(localTarget);
     }
 
     void Start()
