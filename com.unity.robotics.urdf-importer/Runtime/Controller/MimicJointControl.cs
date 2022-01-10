@@ -36,23 +36,27 @@ public class MimicJointControl : MonoBehaviour
     }
 
     private int xAxis = 0;
-    public void TeleportSetToStartJointPosition()
+    public void TeleportToJointPosition(float position)
     {
-        var startTarget = multiplier * mimicedJointStartJointPosition + offset; // Rad or m
-
         var jp = joint.jointPosition;
-        jp[xAxis] = startTarget;
+        jp[xAxis] = position;
         joint.jointPosition = jp;
 
         // This is Done in FixedUpdate as well because user should have set
         // the mimicedJoint reset also,
         // but is ok to make sure here.
-        float localTarget = startTarget;
+        float localTarget = position;
         if (urdfJoint.IsRevoluteOrContinuous)
         {
-            localTarget =  localTarget * Mathf.Rad2Deg;
+            localTarget = localTarget * Mathf.Rad2Deg;
         }
         updateJointDriveTarget(localTarget);
+    }
+    public void TeleportSetToStartJointPosition()
+    {
+        var startTarget = multiplier * mimicedJointStartJointPosition + offset; // Rad or m
+
+        TeleportToJointPosition(startTarget);
     }
 
     void Start()
