@@ -61,7 +61,7 @@ public class MimicJointControl : MonoBehaviour
 
     public void TeleportSetToMatchJointPosition()
     {
-        float localTarget = mimicedJoint.unityJoint.jointPosition;
+        float localTarget = mimicedJoint.unityJoint.jointPosition[xAxis];
         localTarget = multiplier * localTarget + offset; // Rad or m
         TeleportToJointPosition(localTarget);
     }
