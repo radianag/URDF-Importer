@@ -66,11 +66,11 @@ public class MimicJointControl : MonoBehaviour
         TeleportToJointPosition(localTarget);
     }
 
-    void Start()
+    public void Initialize()
     {
         joint = this.GetComponent<ArticulationBody>();
         urdfJoint = this.GetComponent<UrdfJoint>();
-        TeleportSetToStartJointPosition();
+        // TeleportSetToStartJointPosition();
     }
 
     void FixedUpdate()
