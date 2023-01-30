@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.UrdfImporter;
 
+[DefaultExecutionOrder(-101)]
 public class MimicJointControl : MonoBehaviour
 {
     private UrdfJoint mimicedJoint;
@@ -66,7 +67,7 @@ public class MimicJointControl : MonoBehaviour
         TeleportToJointPosition(localTarget);
     }
 
-    public void Initialize()
+    void Awake()
     {
         joint = this.GetComponent<ArticulationBody>();
         urdfJoint = this.GetComponent<UrdfJoint>();
