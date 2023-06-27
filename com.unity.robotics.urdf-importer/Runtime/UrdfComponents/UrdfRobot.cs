@@ -130,13 +130,16 @@ namespace Unity.Robotics.UrdfImporter
             {
                 foreach (CollisionIgnore ignoreCollision in collisionExceptions)
                 {
-                    Collider[] collidersObject1 = ignoreCollision.Link1.GetComponentsInChildren<Collider>();
-                    Collider[] collidersObject2 = ignoreCollision.Link2.GetComponentsInChildren<Collider>();
-                    foreach (Collider colliderMesh1 in collidersObject1)
+                    if (ignoreCollision.Link1 != null && ignoreCollision.Link2 != null)
                     {
-                        foreach (Collider colliderMesh2 in collidersObject2)
+                        Collider[] collidersObject1 = ignoreCollision.Link1.GetComponentsInChildren<Collider>();
+                        Collider[] collidersObject2 = ignoreCollision.Link2.GetComponentsInChildren<Collider>();
+                        foreach (Collider colliderMesh1 in collidersObject1)
                         {
-                            Physics.IgnoreCollision(colliderMesh1, colliderMesh2);
+                            foreach (Collider colliderMesh2 in collidersObject2)
+                            {
+                                Physics.IgnoreCollision(colliderMesh1, colliderMesh2);
+                            }
                         }
                     }
                 }
